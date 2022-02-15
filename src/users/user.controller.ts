@@ -2,6 +2,9 @@ import * as express from 'express';
 import User from '../entity/User'
 import {UserApiType} from "../controllers/userController";
 import {getRepository} from "typeorm";
+import ApiError from '../error/ApiError'
+
+
 
 class UserController {
     public path = '/users';
@@ -51,7 +54,8 @@ class UserController {
         limit = limit || 9
         let offset = page * limit - limit
 
-        const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
+        const users = await this.userRepository.find();
+        // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
         return res.json(users)
     }
 
