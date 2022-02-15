@@ -12,6 +12,8 @@ export type GroupApiType = {
 let groupRepository = connection.getRepository(Group)
 
 class GroupController {
+
+
     async create (req, res) {
         const {name, description} = req.body
         const group = new Group();

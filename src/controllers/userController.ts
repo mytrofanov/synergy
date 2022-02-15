@@ -1,6 +1,7 @@
 const ApiError = require('../error/ApiError')
 import {getConnection} from "typeorm";
 import {User} from "../entity/User";
+import {Router} from 'express';
 const connection = getConnection();
 
 export type UserApiType = {
@@ -15,6 +16,16 @@ let dateYMD = date.toLocaleDateString ("fr-CA");
 let userRepository = connection.getRepository(User)
 
 class UserController {
+    public path = '/user'
+    public router = express.Router()
+
+    // router.post('/',  userController.create )
+    // router.post('/update',  userController.update )
+    // router.post('/del',  userController.delete )
+    // router.get('/', userController.getAll )
+    // router.get('/:id', userController.findOne )
+
+
     async create (req, res) {
         const {nickname} = req.body
         const user = new User();
