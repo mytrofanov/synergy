@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
-import {Group} from "./Group";
+import {Group} from "../groups/group.entity";
 import { CreateDateColumn,UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -18,7 +18,8 @@ export class User {
     public updated_at: Date;
 
     @ManyToOne(type => Group, group => group.users)
-    group: Group;
+    groupId: Group;
+    raw: Array<number>;
 
 }
 

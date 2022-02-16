@@ -1,6 +1,5 @@
 import * as express from 'express';
-import User from '../entity/User'
-import {UserApiType} from "../controllers/userController";
+import User from './user.entity'
 import {getRepository} from "typeorm";
 import ApiError from '../error/ApiError'
 
@@ -17,45 +16,68 @@ class UserController {
 
     public intializeRoutes() {
         this.router.get(this.path, this.getAll);
-        this.router.get('/:id', this.findOne);
+        this.router.get(`/user`, this.findOne);
         this.router.post(this.path, this.create);
-        this.router.post('/update', this.delete);
-        this.router.post('/del', this.update);
+        this.router.post('/del', this.delete);
+        this.router.post('/update', this.update);
     }
 
-    async create (req:express.Request, res:express.Response) {
-        const {nickname} = req.body
-        const user = new User();
-        user.nickname = nickname;
-        const createdUser =  await this.userRepository.save(user);
-        return res.json(createdUser)
+    private create =  async  (req:express.Request, res:express.Response) => {
+        const {nickname, groupId} = req.body
+        if (nickname) {
+            const user = new User();
+            user.nickname = nickname;
+            user.groupId = groupId;
+            const createdUser =  await this.userRepository.save(user);
+            return res.json(createdUser)
+        } else return  ('smth wrong: ' + req.body)
+
+
     }
-    async findOne (req:express.Request, res:express.Response) {
-        const {id}:UserApiType = req.body
-        const oneUser = await this.userRepository.findOne({id})
-        return res.json(oneUser)
+    private findOne =  async  (req:express.Request, res:express.Response) => {
+        const id = req.params.id;
+        if (id) {
+            const oneUser = await this.userRepository.findOne(id)
+            if (oneUser) {
+                return res.json(oneUser)
+            } else return ('no user with this Id: ' + id)
+        } else return ('smth wrong: ' + req.body)
+
     }
-    async delete (req:express.Request, res:express.Response, next) {
-        const {id}:UserApiType = req.body
-        let userToRemove = await this.userRepository.findOne({id})
-        await this.userRepository.remove(userToRemove)
-        return next(ApiError.success('User deleted'))
+    private delete = async  (req:express.Request, res:express.Response, next) => {
+        const id = req.params.id;
+        if (id){
+            let userToRemove = await this.userRepository.findOne({id})
+            const deleteResponse = await this.userRepository.remove(userToRemove)
+            if (deleteResponse.raw[1]) {
+                return ('user deleted, id:' + id)
+            } else {
+                next(ApiError.badRequest('can not find user with Id:' + id ))
+            }
+        } else return ('smth wrong: ' + req.body)
+
     }
-    async update (req:express.Request, res:express.Response) {
-        const {id, nickname}:UserApiType = req.body
-        let userToUpdate = await this.userRepository.findOne({id})
-        userToUpdate.nickname = nickname;
-        let updatedUser = await this.userRepository.save(userToUpdate)
-        return res.json(updatedUser)
+    private update = async  (req:express.Request, res:express.Response) => {
+        const {id, nickname,groupId} = req.body
+        if (id) {
+            let userToUpdate = await this.userRepository.findOne({id})
+            if (userToUpdate){
+                userToUpdate.nickname = nickname;
+                userToUpdate.groupId = groupId;
+                let updatedUser = await this.userRepository.save(userToUpdate)
+                return res.json(updatedUser)
+            }
+        }
+
     }
-    async getAll (req:express.Request, res:express.Response) {
+    private getAll = async  (req:express.Request, res:express.Response) => {
         let {limit, page} = req.query
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
 
         const users = await this.userRepository.find();
-        // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
+        // const users = await connection.manager.findAndCount(UserEntiy,{take:limit, skip:offset});
         return res.json(users)
     }
 

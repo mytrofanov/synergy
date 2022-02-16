@@ -3,10 +3,9 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import App from './app';
 import config from './ormconfig';
-import PostController from './posts/posts.controller';
-import validateEnv from './utils/validateEnv';
+import UserController from "./users/user.controller";
+import GroupController from "./groups/group.controller";
 
-validateEnv();
 
 (async () => {
     try {
@@ -17,7 +16,8 @@ validateEnv();
     }
     const app = new App(
         [
-            new PostController(),
+            new UserController(),
+            new GroupController(),
         ], process.env.PORT,
     );
     app.listen();

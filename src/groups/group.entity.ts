@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
-import {User} from "./User";
+import {User} from "../users/user.entity";
 
 @Entity()
 export class Group {
@@ -17,3 +17,5 @@ export class Group {
     @OneToMany(type => User, user => user.group)
     users: User[];
 }
+
+export default Group
