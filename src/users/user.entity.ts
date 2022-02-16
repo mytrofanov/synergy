@@ -19,7 +19,7 @@ export class User {
 
     @ManyToOne(type => Group, group => group.users)
     groupId: Group;
-    raw: Array<number>;
+
 
 }
 

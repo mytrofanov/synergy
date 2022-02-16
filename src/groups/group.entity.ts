@@ -14,7 +14,7 @@ export class Group {
     description: string;
 
 
-    @OneToMany(type => User, user => user.group)
+    @OneToMany(type => User, user => user.groupId)
     users: User[];
 }
 
