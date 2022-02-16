@@ -8,6 +8,7 @@ import GroupController from "./groups/group.controller";
 
 
 (async () => {
+
     try {
         await createConnection(config);
     } catch (error) {
@@ -21,4 +22,6 @@ import GroupController from "./groups/group.controller";
         ], process.env.PORT,
     );
     app.listen();
+    app.cors();
+
 })();

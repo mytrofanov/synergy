@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-
+import * as cors from 'cors'
 class App {
     public app: express.Application;
     public port: number;
@@ -19,7 +19,7 @@ class App {
 
     private initializeControllers(controllers) {
         controllers.forEach((controller) => {
-            this.app.use('/', controller.router);
+            this.app.use('/', cors(), controller.router);
         });
     }
 
@@ -28,6 +28,10 @@ class App {
             console.log(`App listening on the port ${this.port}`);
         });
     }
+
+    public cors() {
+        this.app.use(cors());
+        };
 }
 
 export default App;
