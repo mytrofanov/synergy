@@ -35,7 +35,7 @@ class UserController {
 
     }
     private findOne =  async  (req:express.Request, res:express.Response) => {
-        const id = req.params.id;
+        const {id}= req.body
         if (id) {
             const oneUser = await this.userRepository.findOne(id)
             if (oneUser) {
@@ -45,14 +45,12 @@ class UserController {
 
     }
     private delete = async  (req:express.Request, res:express.Response, next) => {
-        const id = req.params.id;
+        const {id}= req.body
         if (id){
             let userToRemove = await this.userRepository.findOne({id})
             const deleteResponse = await this.userRepository.remove(userToRemove)
-            if (deleteResponse.raw[1]) {
-                return ('user deleted, id:' + id)
-            } else {
-                next(ApiError.badRequest('can not find user with Id:' + id ))
+            if (deleteResponse.nickname) {
+                return res.json('deleted: ' + deleteResponse.nickname)
             }
         } else return ('smth wrong: ' + req.body)
 
@@ -71,14 +69,19 @@ class UserController {
 
     }
     private getAll = async  (req:express.Request, res:express.Response) => {
-        let {limit, page} = req.query
+        let {limit, page} = req.body
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
+        const totalUsers = await this.userRepository.count();
 
-        const users = await this.userRepository.find();
-        // const users = await connection.manager.findAndCount(UserEntiy,{take:limit, skip:offset});
-        return res.json(users)
+        const users = await getRepository(User)
+            .createQueryBuilder("Users")
+            .skip(offset)
+            .take(limit)
+            .getMany();
+        // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
+        return res.json([users, {'totalUsers': totalUsers}])
     }
 
 }
