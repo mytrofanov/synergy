@@ -78,7 +78,7 @@ class UserController {
             .take(limit)
             .getMany();
         // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
-        return res.json([users, {'totalUsers': totalUsers}])
+        return res.json([users , {'totalUsers': totalUsers}])
     }
 
     private getGruopUsers = async  (req:express.Request, res:express.Response) => {
