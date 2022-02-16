@@ -1,8 +1,6 @@
 import * as express from 'express';
 import User from './user.entity'
 import {getRepository} from "typeorm";
-import ApiError from '../error/ApiError'
-
 
 
 class UserController {
@@ -17,6 +15,7 @@ class UserController {
     public intializeRoutes() {
         this.router.get(this.path, this.getAll);
         this.router.get(`/user`, this.findOne);
+        this.router.get(`/gusers`, this.getGruopUsers);
         this.router.post(this.path, this.create);
         this.router.post('/del', this.delete);
         this.router.post('/update', this.update);
@@ -37,14 +36,12 @@ class UserController {
     private findOne =  async  (req:express.Request, res:express.Response) => {
         const {id}= req.body
         if (id) {
-            const oneUser = await this.userRepository.findOne(id)
-            if (oneUser) {
-                return res.json(oneUser)
-            } else return ('no user with this Id: ' + id)
-        } else return ('smth wrong: ' + req.body)
+            let oneUser = await this.userRepository.findOne({id})
+            return res.json(oneUser)
+        } else return ('smth wrong user who has Id: ' + id)
 
     }
-    private delete = async  (req:express.Request, res:express.Response, next) => {
+    private delete = async  (req:express.Request, res:express.Response) => {
         const {id}= req.body
         if (id){
             let userToRemove = await this.userRepository.findOne({id})
@@ -82,6 +79,23 @@ class UserController {
             .getMany();
         // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
         return res.json([users, {'totalUsers': totalUsers}])
+    }
+
+    private getGruopUsers = async  (req:express.Request, res:express.Response) => {
+        let {limit, page, groupId} = req.body
+        page = page || 1
+        limit = limit || 9
+        let offset = page * limit - limit
+        const groupUsers = await this.userRepository.count({groupId});
+
+        const users = await getRepository(User)
+            .createQueryBuilder("Users")
+            .where({groupId})
+            .skip(offset)
+            .take(limit)
+            .getMany();
+        // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
+        return res.json([users, {'groupUsers': groupUsers}])
     }
 
 }
