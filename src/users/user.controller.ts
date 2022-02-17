@@ -14,11 +14,11 @@ class UserController {
 
     public intializeRoutes() {
         this.router.get(this.path, this.getAll);
-        this.router.get(`/user`, this.findOne);
-        this.router.get(`/gusers`, this.getGruopUsers);
+        this.router.get(`/users/user`, this.findOne);
+        this.router.get(`/users/gusers`, this.getGruopUsers);
         this.router.post(this.path, this.create);
-        this.router.post('/del', this.delete);
-        this.router.post('/update', this.update);
+        this.router.post('/users/del', this.delete);
+        this.router.post('/users/update', this.update);
     }
 
     private create =  async  (req:express.Request, res:express.Response) => {
