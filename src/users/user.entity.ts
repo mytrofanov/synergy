@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
 import {Group} from "../groups/group.entity";
 import { CreateDateColumn,UpdateDateColumn } from "typeorm";
 
@@ -17,8 +17,12 @@ export class User {
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
     public updated_at: Date;
 
+    @Column({ nullable: true })
+    groupId: number;
+
     @ManyToOne(type => Group, group => group.users)
-    groupId: Group;
+    @JoinColumn()
+    group: Group;
 
 
 }
