@@ -66,18 +66,18 @@ class UserController {
 
     }
     private getAll = async  (req:express.Request, res:express.Response) => {
-        let {limit, page} = req.body
-        page = page || 1
-        limit = limit || 9
-        let offset = page * limit - limit
+        // remove comments to work with pagination:
+        // let {limit, page} = req.body
+        // page = page || 1
+        // limit = limit || 10
+        // let offset = page * limit - limit
         const totalUsers = await this.userRepository.count();
 
         const users = await getRepository(User)
             .createQueryBuilder("Users")
-            .skip(offset)
-            .take(limit)
+            // .skip(offset)
+            // .take(limit)
             .getMany();
-        // const users = await connection.manager.findAndCount(User,{take:limit, skip:offset});
         return res.json([users , {'totalUsers': totalUsers}])
     }
 
