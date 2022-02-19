@@ -61,7 +61,7 @@ class UserController {
 
     }
     private delete = async  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const {id}= req.body
+        const {id}= req.params
         try {
             if (id){
                 let userToRemove = await this.userRepository.findOne({id})
