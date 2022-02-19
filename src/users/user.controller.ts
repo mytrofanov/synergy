@@ -5,6 +5,8 @@ import validationMiddleware from "../middleware/validation.middleware";
 import CreateUserDto from "./users.dto";
 import NotFoundException from "../exceptions/NotFoundException";
 import HttpException from "../exceptions/HttpException";
+import UserIdDto from "./usersId.dto";
+import UserGroupIdDto from "./usersGroupId.dto";
 
 
 class UserController {
@@ -18,11 +20,11 @@ class UserController {
 
     public intializeRoutes() {
         this.router.get(this.path, this.getAll);
-        this.router.get(`/users/user`, validationMiddleware(CreateUserDto), this.findOne);
-        this.router.get(`/users/gusers`, validationMiddleware(CreateUserDto),this.getGruopUsers);
+        this.router.get(`/users/user`, validationMiddleware(UserIdDto), this.findOne);
+        this.router.get(`/users/gusers`, validationMiddleware(UserGroupIdDto),this.getGruopUsers);
         this.router.post(this.path, validationMiddleware(CreateUserDto),this.create);
-        this.router.post('/users/del', validationMiddleware(CreateUserDto), this.delete);
-        this.router.post('/users/update', validationMiddleware(CreateUserDto),this.update);
+        this.router.post('/users/del', validationMiddleware(UserIdDto), this.delete);
+        this.router.post('/users/update', validationMiddleware(UserIdDto),this.update);
     }
 
     private create =  async  (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -61,7 +63,7 @@ class UserController {
 
     }
     private delete = async  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const {id}= req.params
+        const {id}= req.body
         try {
             if (id){
                 let userToRemove = await this.userRepository.findOne({id})

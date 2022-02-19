@@ -1,9 +1,6 @@
-import {IsNumber, IsString} from 'class-validator';
+import { IsString} from 'class-validator';
 
 class CreateGroupDto {
-    @IsNumber()
-    public id: number;
-
     @IsString()
     public name: string;
 
