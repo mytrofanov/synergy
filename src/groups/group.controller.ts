@@ -97,7 +97,10 @@ class GroupController {
     }
     private getAll = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
-            const groups = await this.groupRepository.find();
+            const groups = await getRepository(Group)
+                .createQueryBuilder("Groups")
+                .orderBy('id', 'ASC')
+                .getMany();
             return res.json(groups)
         } catch (e) {
             next(new HttpException(404, e.message));

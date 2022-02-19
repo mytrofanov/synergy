@@ -113,6 +113,7 @@ class UserController {
                 .createQueryBuilder("Users")
                 // .skip(offset)
                 // .take(limit)
+                .orderBy('id', 'ASC')
                 .getMany();
             return res.json([users , {'totalUsers': totalUsers}])
         } catch (e) {
