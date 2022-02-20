@@ -10,6 +10,7 @@ import GroupController from "./groups/group.controller";
 (async () => {
 
     try {
+        console.log('config:',config)
         await createConnection(config);
     } catch (error) {
         console.log('Error while connecting to the database', error);

@@ -26,6 +26,23 @@ services:
     networks:
       - postgres
 
+  backend:
+    container_name: sbackend
+    image: mytrofanov/synergy_backend:v1
+    ports:
+      - "5000:5000"
+    networks:
+      - postgres
+
+  frontend:
+    container_name: sfrontend
+    image: mytrofanov/synergy_frontend:v1
+    ports:
+      - "3000:3000"
+    networks:
+      - postgres
+
+
 networks:
   postgres:
     driver: bridge
